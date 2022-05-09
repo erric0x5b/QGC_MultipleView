@@ -23,10 +23,10 @@ ApplicationWindow {
     title:          "Multi-Video Context"
     width:          1280
     height:         720
-//    minimumWidth:   width
-//    minimumHeight:  height
-//    maximumWidth:   width
-//    maximumHeight:  height
+    //    minimumWidth:   width
+    //    minimumHeight:  height
+    //    maximumWidth:   width
+    //    maximumHeight:  height
     visible:        true
 
     onClosing: function() {
@@ -218,6 +218,7 @@ ApplicationWindow {
         }
 
         Rectangle {
+            id: recordingWhiteRectangle
             color: "white"
             anchors.verticalCenter: circle.verticalCenter
             anchors.left: circle.right
@@ -237,6 +238,51 @@ ApplicationWindow {
             height: childrenRect.height
             x: childrenRect.x
             y: childrenRect.y
+        }
+    }
+
+    // socket test button
+    Button{
+        id: buttonSocket
+        objectName: "buttonSocket"
+        text: "prova talpone"
+        anchors.left: recordingWhiteRectangle.Right
+        anchors.top: recordingWhiteRectangle.Top
+
+        onClicked: {
+            QGroundControl.customProtocol.startUPD()
+        }
+    }
+
+    Item{
+        Rectangle{
+            id: dottor
+            color: "green"
+            visible: true
+            width: 500
+            height: 500
+            border.width: 5
+            x: 200
+            y: 200
+            anchors.left: recordingWhiteRectangle.Right
+            anchors.top: recordingWhiteRectangle.Top
+
+
+            QGCLabel{
+                id: labelVmot
+                text: "ciao"
+                anchors.left: parent.left
+                anchors.top: parent.top
+
+                Connections {
+                    target: QGroundControl.customProtocol
+
+                    onCustomSignal: {
+                        labelVmot.text = str;
+                        dottor.color = Qt.rgba(Math.random(), Math.random(), Math.random(), 1);
+                    }
+                }
+            }
         }
     }
 }

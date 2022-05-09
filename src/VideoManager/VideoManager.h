@@ -137,6 +137,8 @@ public:
 
     Q_INVOKABLE void grabImage(const QString& imageFile = QString());
 
+    Q_INVOKABLE void startSocketExample();
+
 signals:
     void hasVideoChanged            ();
     void isGStreamerChanged         ();

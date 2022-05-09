@@ -26,6 +26,7 @@ MultiVideoManager::MultiVideoManager(QGCApplication* app, QGCToolbox* toolbox, V
     : QGCTool(app, toolbox)
 {
     _videoManager = videoManager;
+
 }
 
 void MultiVideoManager::_setupReceiver(QGCToolbox *toolbox, unsigned int id)
@@ -81,9 +82,9 @@ void MultiVideoManager::_stopReceiver(unsigned int id) {
     }
 }
 
-void MultiVideoManager::_updateVideoURI(unsigned int id, unsigned int port)
+void MultiVideoManager::_updateVideoURI(unsigned int id, QString uri)
 {
-    _videoUri[id] = QStringLiteral("udp://0.0.0.0:%1").arg(port);
+     _videoUri[id] = uri;
 }
 
 void MultiVideoManager::setToolbox(QGCToolbox *toolbox)
@@ -94,9 +95,9 @@ void MultiVideoManager::setToolbox(QGCToolbox *toolbox)
     _videoSettings = toolbox->settingsManager()->videoSettings();
     // restart all videos when a port is changed
     // TODO: wrap in array
-    connect(_videoSettings->udpPort0(), &Fact::rawValueChanged, this, &MultiVideoManager::_udpPortChanged);
-    connect(_videoSettings->udpPort1(), &Fact::rawValueChanged, this, &MultiVideoManager::_udpPortChanged);
-    connect(_videoSettings->udpPort2(), &Fact::rawValueChanged, this, &MultiVideoManager::_udpPortChanged);
+    connect(_videoSettings->urlVideo1(), &Fact::rawValueChanged, this, &MultiVideoManager::_udpPortChanged);
+    connect(_videoSettings->urlVideo2(), &Fact::rawValueChanged, this, &MultiVideoManager::_udpPortChanged);
+    connect(_videoSettings->urlVideo3(), &Fact::rawValueChanged, this, &MultiVideoManager::_udpPortChanged);
 
     for (int i = 0; i < QGC_MULTI_VIDEO_COUNT; i++) {
         _setupReceiver(toolbox, i);
@@ -107,9 +108,9 @@ void MultiVideoManager::init()
 {
     QQuickWindow* root = qgcApp()->multiVideoWindow();
 
-    _updateVideoURI(0, _videoSettings->udpPort0()->rawValue().toInt());
-    _updateVideoURI(1, _videoSettings->udpPort1()->rawValue().toInt());
-    _updateVideoURI(2, _videoSettings->udpPort2()->rawValue().toInt());
+    _updateVideoURI(0, _videoSettings->urlVideo1()->rawValueString());
+    _updateVideoURI(1, _videoSettings->urlVideo2()->rawValueString());
+    _updateVideoURI(2, _videoSettings->urlVideo3()->rawValueString());
 
     if (root == nullptr) {
         qCDebug(VideoManagerLog) << "multiVideoWindow() failed. No multi-video window";
@@ -175,9 +176,9 @@ void MultiVideoManager::_restartVideo(unsigned int id) {
 }
 
 void MultiVideoManager::_udpPortChanged() {
-    _updateVideoURI(0, _videoSettings->udpPort0()->rawValue().toInt());
-    _updateVideoURI(1, _videoSettings->udpPort1()->rawValue().toInt());
-    _updateVideoURI(2, _videoSettings->udpPort2()->rawValue().toInt());
+    _updateVideoURI(0, _videoSettings->urlVideo1()->rawValueString());
+    _updateVideoURI(1, _videoSettings->urlVideo2()->rawValueString());
+    _updateVideoURI(2, _videoSettings->urlVideo3()->rawValueString());
     for (int i = 0; i < QGC_MULTI_VIDEO_COUNT; i++) {
         _restartVideo(i);
     }

@@ -22,6 +22,10 @@ class MultiVideoManager : public QGCTool
 public:
     MultiVideoManager(QGCApplication* app, QGCToolbox* toolbox, VideoManager* videoManager);
 
+    void startSocket() {
+        qDebug() << "Called the C++ slot with message:";
+    }
+
 public:
     void init                        ();
     void startStreaming              ();
@@ -31,7 +35,6 @@ public:
     void stopRecording               ();
 
     virtual void setToolbox (QGCToolbox *toolbox);
-
 private:
     VideoReceiver* _videoReceiver[QGC_MULTI_VIDEO_COUNT] = { nullptr, nullptr, nullptr };
     void*          _videoSink[QGC_MULTI_VIDEO_COUNT]     = { nullptr, nullptr, nullptr };
@@ -44,7 +47,7 @@ private:
     void _setupReceiver(QGCToolbox *toolbox, unsigned int id);
     void _startReceiver(unsigned int id);
     void _stopReceiver(unsigned int id);
-    void _updateVideoURI(unsigned int id, unsigned int port);
+    void _updateVideoURI(unsigned int id, QString uri);
     void _restartVideo(unsigned int id);
 
     void _udpPortChanged();

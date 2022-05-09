@@ -170,31 +170,31 @@ DECLARE_SETTINGSFACT_NO_FUNC(VideoSettings, multiVideoEnabled)
     return _multiVideoEnabledFact;
 }
 
-DECLARE_SETTINGSFACT_NO_FUNC(VideoSettings, udpPort0)
+DECLARE_SETTINGSFACT_NO_FUNC(VideoSettings, urlVideo1)
 {
-    if (!_udpPort0Fact) {
-        _udpPort0Fact = _createSettingsFact(udpPort0Name);
-        connect(_udpPort0Fact, &Fact::valueChanged, this, &VideoSettings::_configChanged);
+    if (!_urlVideo1Fact) {
+        _urlVideo1Fact = _createSettingsFact(urlVideo1Name);
+        connect(_urlVideo1Fact, &Fact::valueChanged, this, &VideoSettings::_configChanged);
     }
-    return _udpPort0Fact;
+    return _urlVideo1Fact;
 }
 
-DECLARE_SETTINGSFACT_NO_FUNC(VideoSettings, udpPort1)
+DECLARE_SETTINGSFACT_NO_FUNC(VideoSettings, urlVideo2)
 {
-    if (!_udpPort1Fact) {
-        _udpPort1Fact = _createSettingsFact(udpPort1Name);
-        connect(_udpPort1Fact, &Fact::valueChanged, this, &VideoSettings::_configChanged);
+    if (!_urlVideo2Fact) {
+        _urlVideo2Fact = _createSettingsFact(urlVideo2Name);
+        connect(_urlVideo2Fact, &Fact::valueChanged, this, &VideoSettings::_configChanged);
     }
-    return _udpPort1Fact;
+    return _urlVideo2Fact;
 }
 
-DECLARE_SETTINGSFACT_NO_FUNC(VideoSettings, udpPort2)
+DECLARE_SETTINGSFACT_NO_FUNC(VideoSettings, urlVideo3)
 {
-    if (!_udpPort2Fact) {
-        _udpPort2Fact = _createSettingsFact(udpPort2Name);
-        connect(_udpPort2Fact, &Fact::valueChanged, this, &VideoSettings::_configChanged);
+    if (!_urlVideo3Fact) {
+        _urlVideo3Fact = _createSettingsFact(urlVideo3Name);
+        connect(_urlVideo3Fact, &Fact::valueChanged, this, &VideoSettings::_configChanged);
     }
-    return _udpPort2Fact;
+    return _urlVideo3Fact;
 }
 
 DECLARE_SETTINGSFACT_NO_FUNC(VideoSettings, rtspUrl)

@@ -26,28 +26,25 @@
     "default": true
 },
 {
-    "name": "udpPort0",
+    "name": "urlVideo1",
     "shortDesc": "MultiVideo UDP Port 1",
     "longDesc": "UDP ports to bind for video streams.",
-    "type": "uint16",
-    "min": 1025,
-    "default": 5600
+    "type": "string",
+    "default": ""
 },
 {
-    "name": "udpPort1",
+    "name": "urlVideo2",
     "shortDesc": "MultiVideo UDP Port 2",
     "longDesc": "UDP ports to bind for video streams.",
-    "type": "uint16",
-    "min": 1025,
-    "default": 5601
+    "type": "string",
+    "default": ""
 },
 {
-    "name": "udpPort2",
+    "name": "urlVideo3",
     "shortDesc": "MultiVideo UDP Port 3",
     "longDesc": "UDP ports to bind for video streams.",
-    "type": "uint16",
-    "min": 1025,
-    "default": 5602
+    "type": "string",
+    "default": ""
 },
 {
     "name":             "rtspUrl",

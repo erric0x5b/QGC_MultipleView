@@ -281,6 +281,12 @@ VideoManager::stopVideo()
     _stopReceiver(0);
 }
 
+void VideoManager::startSocketExample()
+{
+    _multiVideoManager->startSocket();
+}
+
+
 void
 VideoManager::startRecording(const QString& videoFile)
 {

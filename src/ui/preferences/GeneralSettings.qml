@@ -364,34 +364,34 @@ Rectangle {
 //                                    visible: true
 //                                }
                                 QGCLabel {
-                                    id: udpPort0Label
-                                    text: qsTr("UDP Port 1")
+                                    id: urlVideo1Label
+                                    text: qsTr("URL Video 1")
                                     visible: true
                                 }
                                 FactTextField {
                                     Layout.preferredWidth: _comboFieldWidth
-                                    fact: _videoSettings.udpPort0
-                                    visible: udpPort0Label.visible
+                                    fact: _videoSettings.urlVideo1
+                                    visible: urlVideo1Label.visible
                                 }
                                 QGCLabel {
-                                    id: udpPort1Label
-                                    text: qsTr("UDP Port 2")
+                                    id: urlVideo2Label
+                                    text: qsTr("URL Video 2")
                                     visible: true
                                 }
                                 FactTextField {
                                     Layout.preferredWidth: _comboFieldWidth
-                                    fact: _videoSettings.udpPort1
-                                    visible: udpPort1Label.visible
+                                    fact: _videoSettings.urlVideo2
+                                    visible: urlVideo2Label.visible
                                 }
                                 QGCLabel {
-                                    id: udpPort2Label
-                                    text: qsTr("UDP Port 3")
+                                    id: urlVideo3Label
+                                    text: qsTr("URL Video 3")
                                     visible: true
                                 }
                                 FactTextField {
                                     Layout.preferredWidth: _comboFieldWidth
-                                    fact: _videoSettings.udpPort2
-                                    visible: udpPort2Label.visible
+                                    fact: _videoSettings.urlVideo3
+                                    visible: urlVideo3Label.visible
                                 }
                             }
                         }
