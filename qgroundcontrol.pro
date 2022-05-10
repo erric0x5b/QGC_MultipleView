@@ -436,7 +436,9 @@ HEADERS += \
     src/api/QGCSettings.h \
     src/api/QmlComponentInfo.h \
     src/GPS/Drivers/src/base_station.h \
-    src/custom/customprotocolclass.h
+    src/custom/customprotocolclass.h \
+    src/custom/podcommand.h \
+    src/custom/poddata.h
 
 contains (DEFINES, QGC_ENABLE_PAIRING) {
     HEADERS += \
@@ -449,7 +451,9 @@ SOURCES += \
     src/api/QGCOptions.cc \
     src/api/QGCSettings.cc \
     src/api/QmlComponentInfo.cc \
-    src/custom/customprotocolclass.cpp
+    src/custom/customprotocolclass.cpp \
+    src/custom/podcommand.cpp \
+    src/custom/poddata.cpp
 
 contains (DEFINES, QGC_ENABLE_PAIRING) {
     SOURCES += \

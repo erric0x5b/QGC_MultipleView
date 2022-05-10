@@ -16,6 +16,8 @@ CustomProtocolClass::CustomProtocolClass(QObject *parent)
     // Create pod data
     podData1 = new PODData(this);
     podData2 = new PODData(this);
+    podCommand1 = new PODCommand(1, this);
+    podCommand2 = new PODCommand(2, this);
     _parseNMEAStatus = 0;
 }
 
@@ -23,12 +25,17 @@ void CustomProtocolClass::timerOverflow() {
     QByteArray Data;
     switch(sendCountId){
     case 0:
-        Data.append("$SFC,BAT1,FF,1,1,1,1*");
+        qDebug()<< podCommand1->getNMEACommand();
+        Data = podCommand1->getNMEACommand().toUtf8();
         sendCountId =1;
         break;
     case 1:
+        Data = podCommand2->getNMEACommand().toUtf8();
+        sendCountId =2;
+        break;
+    case 2:
     default:
-        Data.append("$SFC,BUS,1,1,1*");
+        Data.append("$SFC,BUS,1,1,1*\r\n");
         sendCountId =0;
     }
 
@@ -37,9 +44,12 @@ void CustomProtocolClass::timerOverflow() {
     socket->writeDatagram(Data, QHostAddress("192.168.2.2"), 5400);
 }
 
-void CustomProtocolClass::startUPD() {
-    qDebug() << "Start UDP ";
+void CustomProtocolClass::startTxTimer() {
     sendTimer->start(100);
+}
+
+void CustomProtocolClass::enable24V(bool enabled){
+    // TODO Devo settare la prorpietà nel POD
 }
 
 bool CustomProtocolClass::parseNMEAMessge(const QByteArray& rxMessage) {
@@ -134,69 +144,30 @@ void CustomProtocolClass::udpSocketReadyRead(){
 
     if ( this->parseNMEAMessge(buffer) )
     {
-        // Check CRC and send to the right pod (@TODO)
-        if (!podData1->parsePodData(_completeMessage)){
-            qDebug() << "Error in  parsePodData while parsing:" << _completeMessage;
-        } else
+        QList<QByteArray> buffTokens = buffer.split(',');
+        if (buffTokens.length()< 2)
         {
-            qDebug() << "Parsed message" << podData1->debugString();
-            emit customSignal(this->podData1->debugString());
+            qDebug() << "Error in udpSocketReadyRead, packet too short" << buffTokens.length();
+            return;
+        }
+        if ( buffTokens.at(0) == "BAT1" )
+        {
+            if (!podData1->parsePodData(_completeMessage)){
+                qDebug() << "Error in  parsePodData while parsing:" << _completeMessage;
+            } else
+            {
+                emit pod1UpdatedData(this->podData1->updatedValueStringList());
+            }
+        } else if ( buffTokens.at(0) == "BAT2" )         {
+            if (!podData2->parsePodData(_completeMessage)){
+                qDebug() << "Error in  parsePodData while parsing:" << _completeMessage;
+            } else
+            {
+                emit pod2UpdatedData(this->podData2->updatedValueStringList());
+            }
         }
         _completeMessage.clear();
     }
 }
-
-PODData::PODData(QObject *parent): QObject{parent}
-{
-    this->vBatt = 0.0f;
-    this->vMot= 0.0f;
-    this->v48= 0.0f;
-    this->iBatt= 0.0f;
-    this->degTemp= 0.0f;
-    this->digitalInput =0;
-    this->vMotIn= 0;
-    this->leak = 0;
-}
-
-bool PODData::parsePodData(QByteArray buffRecv){
-    QList<QByteArray> buffTokens = buffRecv.split(',');
-    if (buffTokens.length()!= 10)
-    {
-        qDebug() << "Error in  parsePodData buffTokens does not match:" << buffTokens.length();
-        return false;
-    }
-    this->parsePodToken(buffTokens.at(2), &this->vBatt);
-    this->parsePodToken(buffTokens.at(3), &this->vMot);
-    this->parsePodToken(buffTokens.at(4), &this->v48);
-    this->parsePodToken(buffTokens.at(5), &this->iBatt);
-    this->parsePodToken(buffTokens.at(6), &this->degTemp);
-    this->parsePodToken(buffTokens.at(7), &this->digitalInput);
-    this->parsePodToken(buffTokens.at(8), &this->vMotIn);
-    this->parsePodToken(buffTokens.at(9), &this->leak);
-    return true;
-}
-
-void PODData::parsePodToken(const QByteArray &token, float * pFloatData)
-{
-    if (!token.isEmpty())
-    {
-        *pFloatData = token.toFloat();
-    }
-}
-
-void PODData::parsePodToken(const QByteArray &token, int * pIntData)
-{
-    if (!token.isEmpty())
-    {
-        *pIntData = token.toInt();
-    }
-}
-
-QString PODData::debugString(){
-    return QString::number(this->v48);
-}
-
-
-
 
 
