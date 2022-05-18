@@ -48,7 +48,17 @@ void CustomProtocolClass::startTxTimer() {
     sendTimer->start(100);
 }
 
-void CustomProtocolClass::enable24V(bool enabled){
+void CustomProtocolClass::enable24V(int podID, bool enabled){
+    qDebug() << "Enable 24V changed POD: " << podID << " value: " << enabled;
+    // TODO Devo settare la prorpietà nel POD
+}
+
+void CustomProtocolClass::enable12V(int podID, bool enabled){
+    qDebug() << "Enable 12V changed POD: " << podID << " value: " << enabled;
+    // TODO Devo settare la prorpietà nel POD
+}
+void CustomProtocolClass::enableVMot(int podID, bool enabled){
+    qDebug() << "Enable VMOT changed POD: " << podID << " value: " << enabled;
     // TODO Devo settare la prorpietà nel POD
 }
 

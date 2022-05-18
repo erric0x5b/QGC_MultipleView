@@ -41,10 +41,25 @@ public slots:
     void timerOverflow();
 
     /**
-     * @brief enable24V Function used to enable/disable the 24V power supply on the ROV
-     * @param enabled
+     * @brief enable24V Function used to enable/disable the 24V power supply on the ROV POD
+     * @param podID can be either 1 or 2 right now
+     * @param enabled TRUE to enable. FALSE to disable.
      */
-    void enable24V(bool enabled);
+    void enable24V(int podID, bool enabled);
+
+    /**
+     * @brief enable12V Function used to enable/disable the 12V power supply on the ROV POD
+     * @param podID can be either 1 or 2 right now
+     * @param enabled TRUE to enable. FALSE to disable.
+     */
+    void enable12V(int podID, bool enabled);
+
+    /**
+     * @brief enableVMOT Function used to enable/disable the VMOT power supply on the ROV POD
+     * @param podID can be either 1 or 2 right now
+     * @param enabled TRUE to enable. FALSE to disable.
+     */
+    void enableVMot(int podID, bool enabled);
 
 private:
     QUdpSocket* socket;

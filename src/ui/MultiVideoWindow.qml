@@ -149,6 +149,7 @@ ApplicationWindow {
             x:                      0
             y:                      0
 
+
             //POD 1
             Rectangle{
                 id:                     pod1Section
@@ -163,191 +164,20 @@ ApplicationWindow {
                 anchors.topMargin:      5
                 anchors.leftMargin:     5
 
-                QGCLabel{
-                    id:                 labelPod1
-                    text:               qsTr("POD 1")
-                    font.family:        ScreenTools.demiboldFontFamily
-                    color:              "white"
-                    font.pointSize:     ScreenTools.largeFontPointSize
-                    anchors.horizontalCenter:     pod1Section.horizontalCenter
-                    anchors.top:        pod1Section.top
-                    anchors.topMargin:  10
-                    anchors.rightMargin: 10
-                }
 
-                QGCLabel{
-                    id:                 labelBatt1
-                    text:               qsTr("Batt V:")
-                    font.family:        ScreenTools.demiboldFontFamily
-                    color:              "white"
-                    font.pointSize:     ScreenTools.largeFontPointSize
-                    anchors.left:       pod1Section.left
-                    anchors.top:        labelPod1.bottom
-                    anchors.leftMargin: 10
-                    anchors.topMargin:  10
-                }
-                QGCLabel{
-                    id:                 labelVbat1
-                    text:               "00.0 V"
-                    font.family:        ScreenTools.normalFontFamily
-                    color:              "Light Green"
-                    font.pointSize:     ScreenTools.largeFontPointSize
-                    anchors.left:       pod1Section.horizontalCenter
-                    anchors.verticalCenter:   labelBatt1.verticalCenter
-                    anchors.leftMargin: 20
-                }
+                PODSectionComponent{
+                    id: pod1Data;
+                    anchors.fill: parent
+                    podTitle : qsTr("POD 1")
 
-                QGCLabel{
-                    id:                 labelIBatt1
-                    text:               qsTr("Batt A:")
-                    font.family:        ScreenTools.demiboldFontFamily
-                    color:              "white"
-                    font.pointSize:     ScreenTools.largeFontPointSize
-                    anchors.left:       pod1Section.left
-                    anchors.top:        labelBatt1.bottom
-                    anchors.leftMargin: 10
-                    anchors.topMargin:  5
-                }
-                QGCLabel{
-                    id:                 labelIBattv1
-                    text:               qsTr("00.0 A")
-                    font.family:        ScreenTools.normalFontFamily
-                    color:              "Light Green"
-                    font.pointSize:     ScreenTools.largeFontPointSize
-                    anchors.left:       pod1Section.horizontalCenter
-                    anchors.verticalCenter:   labelIBatt1.verticalCenter
-                    anchors.leftMargin: 20
-                }
-
-                QGCLabel{
-                    id:                 labelV481
-                    text:               qsTr("Power IN:")
-                    font.family:        ScreenTools.demiboldFontFamily
-                    color:              "white"
-                    font.pointSize:     ScreenTools.largeFontPointSize
-                    anchors.left:       pod1Section.left
-                    anchors.top:        labelIBatt1.bottom
-                    anchors.leftMargin: 10
-                    anchors.topMargin:  5
-                }
-                QGCLabel{
-                    id:                 labelV48v1
-                    text:               qsTr("00.0 V")
-                    font.family:        ScreenTools.normalFontFamily
-                    color:              "Light Green"
-                    font.pointSize:     ScreenTools.largeFontPointSize
-                    anchors.left:       pod1Section.horizontalCenter
-                    anchors.verticalCenter:   labelV481.verticalCenter
-                    anchors.leftMargin: 20
-                }
-
-                QGCLabel{
-                    id:                 labelMott1
-                    text:               qsTr("Mott:")
-                    font.family:        ScreenTools.demiboldFontFamily
-                    color:              "white"
-                    font.pointSize:     ScreenTools.largeFontPointSize
-                    anchors.top:        labelV481.bottom
-                    anchors.left:       pod1Section.left
-                    anchors.leftMargin: 10
-                    anchors.topMargin:  5
-                }
-                QGCLabel{
-                    id:                 labelVmot1
-                    text:               qsTr("00.0 V")
-                    font.family:        ScreenTools.normalFontFamily
-                    color:              "Light Green"
-                    font.pointSize:     ScreenTools.largeFontPointSize
-                    anchors.left:       pod1Section.horizontalCenter
-                    anchors.verticalCenter:   labelMott1.verticalCenter
-                    anchors.leftMargin: 20
-                }
-
-                QGCLabel{
-                    id:                 labelTemperature1
-                    text:               qsTr("Temp:")
-                    font.family:        ScreenTools.demiboldFontFamily
-                    color:              "white"
-                    font.pointSize:     ScreenTools.largeFontPointSize
-                    anchors.left:       pod1Section.left
-                    anchors.top:        labelMott1.bottom
-                    anchors.leftMargin: 10
-                    anchors.topMargin:  5
-                }
-                QGCLabel{
-                    id:                 labelTemperaturev1
-                    text:               qsTr("00.0°C")
-                    font.family:        ScreenTools.normalFontFamily
-                    color:              "Light Green"
-                    font.pointSize:     ScreenTools.largeFontPointSize
-                    anchors.left:       pod1Section.horizontalCenter
-                    anchors.verticalCenter:   labelTemperature1.verticalCenter
-                    anchors.leftMargin: 20
-                }
-
-                QGCSwitch{
-                    id:                 buttonEnable12V1
-                    anchors.left:       pod1Section.left
-                    anchors.top:        labelTemperaturev1.bottom
-                    anchors.topMargin:  20
-                    anchors.leftMargin: 10
-                    checked:            true
-
-                    onCheckedChanged: {
-                        QGroundControl.customProtocol.enable24V(checked)
+                    onEnable24VChanged: {
+                        QGroundControl.customProtocol.enable24V(1, checkedStatus);
                     }
-                    QGCLabel{
-                        text:               qsTr("Main 12V")
-                        font.family:        ScreenTools.normalFontFamily
-                        color:              "white"
-                        font.pointSize:     ScreenTools.largeFontPointSize
-                        anchors.left:       parent.right
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.leftMargin:     5
+                    onEnable12VChanged: {
+                        QGroundControl.customProtocol.enable12V(1, checkedStatus);
                     }
-                }
-
-                QGCSwitch{
-                    id:                     buttonEnable24V1
-                    anchors.left:           pod1Section.left
-                    anchors.top:            buttonEnable12V1.bottom
-                    anchors.topMargin:      20
-                    anchors.leftMargin:     10
-                    checked:                false
-
-                    onCheckedChanged: {
-                        QGroundControl.customProtocol.enable24V(checked)
-                    }
-                    QGCLabel{
-                        text:               qsTr("Aux 24V")
-                        font.family:        ScreenTools.normalFontFamily
-                        color:              "white"
-                        font.pointSize:     ScreenTools.largeFontPointSize
-                        anchors.left:       parent.right
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.leftMargin:     5
-                    }
-                }
-
-                QGCSwitch{
-                    id:                     buttonEnableVmot1
-                    anchors.left:           pod1Section.left
-                    anchors.top:            buttonEnable24V1.bottom
-                    anchors.topMargin:      20
-                    anchors.leftMargin:     10
-                    checked:                false
-
-                    onCheckedChanged: {
-                        QGroundControl.customProtocol.enable24V(checked)
-                    }
-                    QGCLabel{
-                        text:               qsTr("Thrusters")
-                        font.family:        ScreenTools.normalFontFamily
-                        color:              "white"
-                        font.pointSize:     ScreenTools.largeFontPointSize
-                        anchors.left:       parent.right
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.leftMargin:     5
+                    onEnableVMotChanged:{
+                         QGroundControl.customProtocol.enableVMot(1, checkedStatus);
                     }
                 }
             }
@@ -366,76 +196,22 @@ ApplicationWindow {
                 anchors.leftMargin:     5
                 anchors.topMargin:     5
 
-                QGCLabel{
-                    id:                     labelPod2
-                    text:                   qsTr("POD 2")
-                    font.family:            ScreenTools.demiboldFontFamily
-                    color:                  "white"
-                    font.pointSize:         ScreenTools.largeFontPointSize
-                    anchors.horizontalCenter:     pod2Section.horizontalCenter
-                    anchors.top:            pod2Section.top
-                    anchors.topMargin:      10
-                }
+                PODSectionComponent{
+                    id: pod2Data;
+                    anchors.fill: parent
+                    podTitle : qsTr("POD 2")
 
-
-                CheckBox{
-                    id:                     buttonEnable12V2
-                    text:                   qsTr("Enable 12V")
-                    anchors.left:           pod2Section.left
-                    anchors.top:            labelPod2.bottom
-                    anchors.topMargin:      10
-                    anchors.leftMargin:     10
-
-                    onCheckedChanged: {
-                        QGroundControl.customProtocol.enable24V(checked)
+                    onEnable24VChanged: {
+                        QGroundControl.customProtocol.enable24V(2, checkedStatus);
                     }
-
-                }
-
-                QGCCheckBox{
-                    id:                     buttonEnable24V2
-                    text:                   qsTr("Enable 24V")
-                    anchors.left:           pod2Section.left
-                    anchors.top:            buttonEnable12V2.bottom
-                    anchors.topMargin:      10
-                    anchors.leftMargin:     10
-
-                    onCheckedChanged: {
-                        QGroundControl.customProtocol.enable24V(checked)
+                    onEnable12VChanged: {
+                        QGroundControl.customProtocol.enable12V(2, checkedStatus);
+                    }
+                    onEnableVMotChanged:{
+                         QGroundControl.customProtocol.enableVMot(2, checkedStatus);
                     }
                 }
             }
-/*
-
-            QGCLabel{
-                id:                 labelDigitalIn
-                text:               qsTr("Digital IN")
-                font.family:        ScreenTools.demiboldFontFamily
-                color:              "white"
-                font.pointSize:     ScreenTools.largeFontPointSize
-                anchors.left:       labelTemperature.left
-                anchors.top:        labelTemperature.bottom
-            }
-            QGCLabel{
-                id:                 labelVmotIn
-                text:               qsTr("VMot IN")
-                font.family:        ScreenTools.demiboldFontFamily
-                color:              "white"
-                font.pointSize:     ScreenTools.largeFontPointSize
-                anchors.left:       labelDigitalIn.left
-                anchors.top:        labelDigitalIn.bottom
-            }
-            QGCLabel{
-                id:                 labelLeak
-                text:               qsTr("Leak")
-                font.family:        ScreenTools.demiboldFontFamily
-                color:              "white"
-                font.pointSize:     ScreenTools.largeFontPointSize
-                anchors.left:       labelVmotIn.left
-                anchors.top:        labelVmotIn.bottom
-            }
-
-*/
 
             //CONTROLLS
             Rectangle{
@@ -684,7 +460,8 @@ ApplicationWindow {
                 target: QGroundControl.customProtocol
 
                 onPod1UpdatedData: {
-                    labelVbat1.text = strList[0];
+                   // pod1Data.updateFields(strList);
+                   /* labelVbat1.text = strList[0];
                     labelVmot1.text = strList[1];
                     labelV48v1.text = strList[2];
                     labelIBattv1.text = strList[3];
@@ -693,6 +470,7 @@ ApplicationWindow {
                     labelVmotIn.text = strList[6];
                     labelLeak.text = strList[7];
                     //dottor.color = Qt.rgba(Math.random(), Math.random(), Math.random(), 1);
+                    */
                 }
             }
         }
