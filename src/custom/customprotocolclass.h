@@ -6,7 +6,8 @@
 #include <QTimer>
 #include "poddata.h"
 #include "podcommand.h"
-#include "buscommand.h"
+
+#define NR_POD  2
 
 class CustomProtocolClass : public QObject
 {
@@ -64,12 +65,10 @@ public slots:
 private:
     QUdpSocket* socket;
     QTimer* sendTimer;
-    PODData* podData1;
-    PODData* podData2;
-    PODCommand* podCommand1;
-    PODCommand* podCommand2;
-    BusCommand* busCommand1;
-    BusCommand* busCommand2;
+    // Array of pointer to the different POD of the ROV. Store the data received from each POD.
+    PODData* podData[NR_POD];
+    // Array of pointer to the different POD of the ROV. Store the command sent to each POD.
+    PODCommand* podCommand[NR_POD];
     int sendCountId;
 
     QByteArray _completeMessage;

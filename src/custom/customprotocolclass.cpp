@@ -1,9 +1,7 @@
 #include "customprotocolclass.h"
 #include <QDebug>
 
-CustomProtocolClass::CustomProtocolClass(QObject *parent)
-    : QObject{parent}
-{
+CustomProtocolClass::CustomProtocolClass(QObject *parent) : QObject{parent} {
     // create a QUDP client socket
     socket = new QUdpSocket(this);
     connect(socket, SIGNAL(readyRead()), this, SLOT(udpSocketReadyRead()));
@@ -14,31 +12,29 @@ CustomProtocolClass::CustomProtocolClass(QObject *parent)
     sendCountId = 0;
 
     // Create pod data
-    podData1 = new PODData(this);
-    podData2 = new PODData(this);
-    podCommand1 = new PODCommand(1, this);
-    podCommand2 = new PODCommand(2, this);
-    busCommand1 = new BusCommand(1, this);
-    busCommand2 = new BusCommand(2, this);
+    podData[0] = new PODData(this);
+    podData[1] = new PODData(this);
+    podCommand[0] = new PODCommand(1, this);
+    podCommand[1] = new PODCommand(2, this);
     _parseNMEAStatus = 0;
 }
 
 void CustomProtocolClass::timerOverflow() {
     QByteArray Data;
-    switch(sendCountId){
+    switch (sendCountId) {
     case 0:
-        qDebug()<< podCommand1->getNMEACommand();
-        Data = podCommand1->getNMEACommand().toUtf8();
-        sendCountId =1;
+        qDebug() << podCommand[0]->getNMEACommand();
+        Data = podCommand[0]->getNMEACommand().toUtf8();
+        sendCountId = 1;
         break;
     case 1:
-        Data = podCommand2->getNMEACommand().toUtf8();
-        sendCountId =2;
+        Data = podCommand[1]->getNMEACommand().toUtf8();
+        sendCountId = 2;
         break;
     case 2:
     default:
-        Data = busCommand1->getNMEACommand().toUtf8();
-        sendCountId =0;
+        Data.append("$SFC,BUS,1,1,1*\r\n");
+        sendCountId = 0;
     }
 
     // Sends the datagram datagram
@@ -46,55 +42,61 @@ void CustomProtocolClass::timerOverflow() {
     socket->writeDatagram(Data, QHostAddress("192.168.2.2"), 5400);
 }
 
-void CustomProtocolClass::startTxTimer() {
-    sendTimer->start(100);
+void CustomProtocolClass::startTxTimer() { sendTimer->start(100); }
+
+void CustomProtocolClass::enable24V(int podID, bool enabled) {
+    if (podID > NR_POD || podID < 0) {
+        qDebug() << "Error CustomProtocolClass::enable24V invalid podID: " << podID;
+    } else {
+        podCommand[podID - 1]->setEnable24V(enabled);
+        qDebug() << "Enable 24V changed POD: " << podID << " value: " << enabled;
+    }
 }
 
-void CustomProtocolClass::enable24V(int podID, bool enabled){
-    qDebug() << "Enable 24V changed POD: " << podID << " value: " << enabled;
-    // TODO Devo settare la prorpietà nel POD
+void CustomProtocolClass::enable12V(int podID, bool enabled) {
+    if (podID > NR_POD || podID < 0) {
+        qDebug() << "Error CustomProtocolClass::enable12V invalid podID: " << podID;
+    } else {
+        podCommand[podID - 1]->setEnable12V(enabled);
+        qDebug() << "Enable 12V changed POD: " << podID << " value: " << enabled;
+    }
+}
+void CustomProtocolClass::enableVMot(int podID, bool enabled) {
+    if (podID > NR_POD || podID < 0) {
+        qDebug() << "Error CustomProtocolClass::enableVMot invalid podID: "
+                 << podID;
+    } else {
+        podCommand[podID - 1]->setEnableVMot(enabled);
+        qDebug() << "Enable VMOT changed POD: " << podID << " value: " << enabled;
+    }
 }
 
-void CustomProtocolClass::enable12V(int podID, bool enabled){
-    qDebug() << "Enable 12V changed POD: " << podID << " value: " << enabled;
-    // TODO Devo settare la prorpietà nel POD
-}
-void CustomProtocolClass::enableVMot(int podID, bool enabled){
-    qDebug() << "Enable VMOT changed POD: " << podID << " value: " << enabled;
-    // TODO Devo settare la prorpietà nel POD
-}
-
-bool CustomProtocolClass::parseNMEAMessge(const QByteArray& rxMessage) {
+bool CustomProtocolClass::parseNMEAMessge(const QByteArray &rxMessage) {
     for (int i = 0; i < rxMessage.size(); ++i) {
-        switch( _parseNMEAStatus ){
-        case 0:
-        {
+        switch (_parseNMEAStatus) {
+        case 0: {
             // Wait for '$'
-            if ( rxMessage.at(i) == '$')
-            {
+            if (rxMessage.at(i) == '$') {
                 _completeMessage.append(rxMessage.at(i));
                 _parseNMEAStatus = 1;
                 _checkSumNMEA = 0;
             }
-        }break;
-        case 1:
-        {
+        } break;
+        case 1: {
             // Wait for '*'
-            if ( rxMessage.at(i) != '*')
-            {
-                if ( rxMessage.at(i) == '$')
-                {
+            if (rxMessage.at(i) != '*') {
+                if (rxMessage.at(i) == '$') {
                     // Manage multiple '$'
                     _completeMessage.clear();
                     _completeMessage.append(rxMessage.at(i));
                     _parseNMEAStatus = 1;
                     _checkSumNMEA = 0;
-                }
-                else {
+                } else {
                     _completeMessage.append(rxMessage.at(i));
                     _checkSumNMEA = _checkSumNMEA ^ rxMessage.at(i);
-                    if ( _completeMessage.size()> 100){
-                        qDebug() << "CustomProtocolClass::parseNMEAMessge _completeMessage too big.";
+                    if (_completeMessage.size() > 100) {
+                        qDebug() << "CustomProtocolClass::parseNMEAMessge _completeMessage "
+                                    "too big.";
                         _parseNMEAStatus = 0;
                         _completeMessage.clear();
                     }
@@ -103,39 +105,37 @@ bool CustomProtocolClass::parseNMEAMessge(const QByteArray& rxMessage) {
                 _completeMessage.append(rxMessage.at(i));
                 _parseNMEAStatus = 2;
             }
-        }break;
-        case 2:
-        {
+        } break;
+        case 2: {
             // Wait for CRC byte 1
             _completeMessage.append(rxMessage.at(i));
             _parseNMEAStatus = 3;
-        }break;
-        case 3:
-        {
+        } break;
+        case 3: {
             // Wait for CRC byte 2
             _completeMessage.append(rxMessage.at(i));
 
             // Convert the CRC inside the _completeMessage from 'hex char' to int
             bool bStatus = false;
-            QByteArray CRCArray = _completeMessage.mid(_completeMessage.size()-2, 2);
-            int checksum = QString(CRCArray).toInt(&bStatus,16);
+            QByteArray CRCArray =
+                    _completeMessage.mid(_completeMessage.size() - 2, 2);
+            int checksum = QString(CRCArray).toInt(&bStatus, 16);
 
             // Reset _parseNMEAStatus
             _parseNMEAStatus = 0;
-            if (checksum == _checkSumNMEA)
-            {
+            if (checksum == _checkSumNMEA) {
                 return true;
             } else {
                 qDebug() << "Eccomi" << checksum << " " << _checkSumNMEA;
                 _completeMessage.clear();
             }
-        }break;
+        } break;
         }
     }
     return false;
 }
 
-void CustomProtocolClass::udpSocketReadyRead(){
+void CustomProtocolClass::udpSocketReadyRead() {
     // when data comes in
     QByteArray buffer;
     buffer.resize(socket->pendingDatagramSize());
@@ -150,36 +150,32 @@ void CustomProtocolClass::udpSocketReadyRead(){
     // (unless the pointers are 0).
     socket->readDatagram(buffer.data(), buffer.size(), &sender, &senderPort);
 
-    //qDebug() << "Message from: " << sender.toString();
-    //qDebug() << "Message port: " << senderPort;
+    // qDebug() << "Message from: " << sender.toString();
+    // qDebug() << "Message port: " << senderPort;
     qDebug() << "Message: " << buffer;
 
-    if ( this->parseNMEAMessge(buffer) )
-    {
+    if (this->parseNMEAMessge(buffer)) {
         QList<QByteArray> buffTokens = buffer.split(',');
-        if (buffTokens.length()< 2)
-        {
-            qDebug() << "Error in udpSocketReadyRead, packet too short" << buffTokens.length();
+        if (buffTokens.length() < 2) {
+            qDebug() << "Error in udpSocketReadyRead, packet too short"
+                     << buffTokens.length();
             return;
         }
-        if ( buffTokens.at(0) == "BAT1" )
-        {
-            if (!podData1->parsePodData(_completeMessage)){
+        if (buffTokens.at(0) == "BAT1") {
+            if (!podData[0]->parsePodData(_completeMessage)) {
                 qDebug() << "Error in  parsePodData while parsing:" << _completeMessage;
-            } else
-            {
-                emit pod1UpdatedData(this->podData1->updatedValueStringList());
+            } else {
+                emit pod1UpdatedData(this->podData[0]->updatedValueStringList());
             }
-        } else if ( buffTokens.at(0) == "BAT2" )         {
-            if (!podData2->parsePodData(_completeMessage)){
+        } else if (buffTokens.at(0) == "BAT2") {
+            if (!podData[1]->parsePodData(_completeMessage)) {
                 qDebug() << "Error in  parsePodData while parsing:" << _completeMessage;
-            } else
-            {
-                emit pod2UpdatedData(this->podData2->updatedValueStringList());
+            } else {
+                emit pod2UpdatedData(this->podData[1]->updatedValueStringList());
             }
+        } else {
+            qDebug() << "Error CustomProtocolClass::udpSocketReadyRead() token.at(0) not currently implemented in message: " << _completeMessage;
         }
         _completeMessage.clear();
     }
 }
-
-
