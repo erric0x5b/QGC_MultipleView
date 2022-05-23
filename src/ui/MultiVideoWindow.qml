@@ -481,64 +481,142 @@ ApplicationWindow {
                             color: "transparent"
                             border.color: "#00000000"
 
+                            QGCLabel{
+                                id:     labelOnOf
+                                text:   qsTr("ON/OFF")
+                                font:   ScreenTools.deminormalFontFamily
+                                anchors.horizontalCenter:   switchLight1.horizontalCenter
+                                anchors.top:    parent.top
+                                anchors.topMargin:  10
+                            }
+
+                            QGCLabel{
+                                id:     labelLights
+                                text:   qsTr("LIGHTS")
+                                font:   ScreenTools.demiboldFontFamily
+                                anchors.horizontalCenter:   sliderLight1.horizontalCenter
+                                anchors.verticalCenter:     labelOnOf.verticalCenter
+                            }
+
+                            QGCLabel{
+                                id:     labelGroup
+                                text:   qsTr("GROUP")
+                                font:   ScreenTools.deminormalFontFamily
+                                anchors.horizontalCenter:   switchGroup1.horizontalCenter
+                                anchors.verticalCenter:     labelOnOf.verticalCenter
+                            }
+
+                            QGCSwitch {
+                                id: switchLight1
+                                anchors.top:    labelOnOf.bottom
+                                anchors.left:   parent.left
+                                anchors.leftMargin: 10
+                                anchors.topMargin: 20
+
+                                onCheckedChanged: {
+                                    if ( switchLight1.checked)
+                                    {
+                                        // Turn on
+                                        QGroundControl.customProtocol.setBUSRegisterValue(1,1,1);
+                                    } else {
+                                        // Turn on
+                                        QGroundControl.customProtocol.setBUSRegisterValue(1,1,0);
+                                    }
+                                }
+                            }
+
                             QGCSlider {
                                 id: sliderLight1
-                                x: 84
-                                y: 23
-                                width: 200
-                            }
-
-                            QGCSlider {
-                                id: sliderLight2
-                                x: 84
-                                y: 77
-                                width: 200
-                            }
-
-                            QGCSlider {
-                                id: sliderLight3
-                                x: 84
-                                y: 131
-                                width: 200
-                            }
-
-                            QGCButton {
-                                id: buttonLight1
-                                x: 12
-                                y: 23
-                                text: qsTr("Light 1")
-                            }
-
-                            QGCButton {
-                                id: buttonLight2
-                                x: 12
-                                y: 77
-                                text: qsTr("Light 2")
-                            }
-
-                            QGCButton {
-                                id: buttonLight3
-                                x: 12
-                                y: 131
-                                text: qsTr("Light 3")
+                                anchors.verticalCenter:    switchLight1.verticalCenter
+                                anchors.left:   switchLight1.right
+                                anchors.leftMargin: 20
+                                width: 170
+                                minimumValue:   0
+                                maximumValue:   255
+                                onValueChanged: {
+                                    QGroundControl.customProtocol.setBUSRegisterValue(1,5,sliderLight1.value);
+                                }
                             }
 
                             QGCSwitch {
                                 id: switchGroup1
-                                x: 290
-                                y: 23
+                                anchors.verticalCenter:     sliderLight1.verticalCenter
+                                anchors.left:               sliderLight1.right
+                                anchors.leftMargin:         20
+                            }
+
+                            QGCSwitch {
+                                id: switchLight2
+                                anchors.horizontalCenter:   switchLight1.horizontalCenter
+                                anchors.top:                switchLight1.bottom
+                                anchors.topMargin:  20
+
+                                onCheckedChanged: {
+                                    if ( switchLight2.checked)
+                                    {
+                                        // Turn on
+                                        QGroundControl.customProtocol.setBUSRegisterValue(2,1,1);
+                                    } else {
+                                        // Turn on
+                                        QGroundControl.customProtocol.setBUSRegisterValue(2,1,0);
+                                    }
+                                }
+                            }
+
+                            QGCSlider {
+                                id: sliderLight2
+                                anchors.verticalCenter:     switchLight2.verticalCenter
+                                anchors.horizontalCenter:   sliderLight1.horizontalCenter
+                                width: 170
+                                minimumValue:   0
+                                maximumValue:   255
+                                onValueChanged: {
+                                    QGroundControl.customProtocol.setBUSRegisterValue(2,5,sliderLight2.value);
+                                }
                             }
 
                             QGCSwitch {
                                 id: switchGroup2
-                                x: 290
-                                y: 77
+                                anchors.verticalCenter:     sliderLight2.verticalCenter
+                                anchors.left:               sliderLight2.right
+                                anchors.leftMargin:         20
+                            }
+
+                            QGCSwitch {
+                                id: switchLight3
+                                anchors.horizontalCenter:   switchLight1.horizontalCenter
+                                anchors.top:                switchLight2.bottom
+                                anchors.topMargin:  20
+
+                                onCheckedChanged: {
+                                    if ( switchLight3.checked)
+                                    {
+                                        // Turn on
+                                        QGroundControl.customProtocol.setBUSRegisterValue(3,1,1);
+                                    } else {
+                                        // Turn on
+                                        QGroundControl.customProtocol.setBUSRegisterValue(3,1,0);
+                                    }
+                                }
+                            }
+
+                            QGCSlider {
+                                id: sliderLight3
+                                anchors.verticalCenter:     switchLight3.verticalCenter
+                                anchors.horizontalCenter:   sliderLight1.horizontalCenter
+                                width: 170
+                                minimumValue:   0
+                                maximumValue:   255
+                                onValueChanged: {
+                                    QGroundControl.customProtocol.setBUSRegisterValue(3,5,sliderLight3.value);
+                                }
                             }
 
                             QGCSwitch {
                                 id: switchGroup3
-                                x: 290
-                                y: 131
+                                anchors.verticalCenter:     sliderLight3.verticalCenter
+                                anchors.left:               sliderLight3.right
+                                anchors.leftMargin:         20
                             }
 
                             QGCButton {
@@ -592,18 +670,17 @@ ApplicationWindow {
                                 text: qsTr("TILT RST")
                             }
 
-                            QGCButton {
-                                id: buttonLaser
-                                x: 12
-                                y: 185
-                                width: 66
-                                text: qsTr("LASER")
+                            QGCSwitch {
+                                id: switchLaser
+                                anchors.verticalCenter: buttonTilt.verticalCenter
+                                anchors.right:          toolSeparator.left
+                                anchors.rightMargin:    10
                             }
 
                             ToolSeparator {
                                 id: toolSeparator
-                                x: 343
-                                y: 23
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.horizontalCenter: parent.horizontalCenter
                                 width: 15
                                 height: 264
                             }
@@ -683,19 +760,23 @@ ApplicationWindow {
 
 
                     QGCTabButton {
-                        text: qsTr("Main")
+                        text: qsTr("MAIN")
+                        font:   ScreenTools.demiboldFontFamily
                     }
 
                     QGCTabButton {
                         text: qsTr("I/O")
+                        font:   ScreenTools.demiboldFontFamily
                     }
 
                     QGCTabButton {
                         text: qsTr("DIAG")
+                        font:   ScreenTools.demiboldFontFamily
                     }
 
                     QGCTabButton {
                         text: qsTr("LOG")
+                        font:   ScreenTools.demiboldFontFamily
                     }
                 }
             }
@@ -741,18 +822,13 @@ ApplicationWindow {
                 target: QGroundControl.customProtocol
 
                 onPod1UpdatedData: {
-                   // pod1Data.updateFields(strList);
-                   /* labelVbat1.text = strList[0];
-                    labelVmot1.text = strList[1];
-                    labelV48v1.text = strList[2];
-                    labelIBattv1.text = strList[3];
-                    labelTemperaturev1.text = strList[4];
-                    labelDigitalIn.text = strList[5];
-                    labelVmotIn.text = strList[6];
-                    labelLeak.text = strList[7];
-                    //dottor.color = Qt.rgba(Math.random(), Math.random(), Math.random(), 1);
-                    */
+                    pod1Data.updateFields(strList);
                 }
+
+                onPod2UpdatedData: {
+                    pod2Data.updateFields(strList);
+                }
+
             }
         }
     }

@@ -1,6 +1,6 @@
 #include "buscommand.h"
 
-BusCommand::BusCommand(int busID, QObject *parent)
+BUSCommand::BUSCommand(int busID, QObject *parent)
     : QObject{parent}
 {
     _busID = busID;
@@ -9,7 +9,7 @@ BusCommand::BusCommand(int busID, QObject *parent)
 }
 
 
-QString BusCommand::getNMEACommand()
+QString BUSCommand::getNMEACommand()
 {
    QString nmeaCommand;
    nmeaCommand.append("$SFC,BUS,");
@@ -24,7 +24,27 @@ QString BusCommand::getNMEACommand()
    return nmeaCommand;
 }
 
-QString BusCommand::computeCRC(QString nmeaCommand)
+int BUSCommand::busReg() const
+{
+    return _busReg;
+}
+
+void BUSCommand::setBusReg(int newBusReg)
+{
+    _busReg = newBusReg;
+}
+
+int BUSCommand::busVal() const
+{
+    return _busVal;
+}
+
+void BUSCommand::setBusVal(int newBusVal)
+{
+    _busVal = newBusVal;
+}
+
+QString BUSCommand::computeCRC(QString nmeaCommand)
 {
     QString crcString;
     int8_t checksum;

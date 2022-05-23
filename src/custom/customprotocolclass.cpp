@@ -16,7 +16,15 @@ CustomProtocolClass::CustomProtocolClass(QObject *parent) : QObject{parent} {
     podData[1] = new PODData(this);
     podCommand[0] = new PODCommand(1, this);
     podCommand[1] = new PODCommand(2, this);
+
+    for (int i = 0; i< BUS_DEVICE; i++)
+    {
+        // BUS id goes from 1 to BUS_DEVICE
+        busCommand[i] = new BUSCommand(i+1, this);
+    }
+
     _parseNMEAStatus = 0;
+    _busSentID = 0;
 }
 
 void CustomProtocolClass::timerOverflow() {
@@ -33,8 +41,13 @@ void CustomProtocolClass::timerOverflow() {
         break;
     case 2:
     default:
-        Data.append("$SFC,BUS,1,1,1*\r\n");
+        Data = busCommand[_busSentID]->getNMEACommand().toUtf8();
         sendCountId = 0;
+        _busSentID++;
+        if ( _busSentID >=BUS_DEVICE)
+        {
+            _busSentID = 0;
+        }
     }
 
     // Sends the datagram datagram
@@ -45,7 +58,7 @@ void CustomProtocolClass::timerOverflow() {
 void CustomProtocolClass::startTxTimer() { sendTimer->start(100); }
 
 void CustomProtocolClass::enable24V(int podID, bool enabled) {
-    if (podID > NR_POD || podID < 0) {
+    if (podID > NR_POD || podID < 1) {
         qDebug() << "Error CustomProtocolClass::enable24V invalid podID: " << podID;
     } else {
         podCommand[podID - 1]->setEnable24V(enabled);
@@ -54,7 +67,7 @@ void CustomProtocolClass::enable24V(int podID, bool enabled) {
 }
 
 void CustomProtocolClass::enable12V(int podID, bool enabled) {
-    if (podID > NR_POD || podID < 0) {
+    if (podID > NR_POD || podID < 1) {
         qDebug() << "Error CustomProtocolClass::enable12V invalid podID: " << podID;
     } else {
         podCommand[podID - 1]->setEnable12V(enabled);
@@ -62,7 +75,7 @@ void CustomProtocolClass::enable12V(int podID, bool enabled) {
     }
 }
 void CustomProtocolClass::enableVMot(int podID, bool enabled) {
-    if (podID > NR_POD || podID < 0) {
+    if (podID > NR_POD || podID < 1) {
         qDebug() << "Error CustomProtocolClass::enableVMot invalid podID: "
                  << podID;
     } else {
@@ -70,6 +83,18 @@ void CustomProtocolClass::enableVMot(int podID, bool enabled) {
         qDebug() << "Enable VMOT changed POD: " << podID << " value: " << enabled;
     }
 }
+
+void CustomProtocolClass::setBUSRegisterValue(int busID, int busRegister, int busValue){
+    if (busID > BUS_DEVICE || busID < 1) {
+        qDebug() << "Error CustomProtocolClass::enableVMot invalid busID: "
+                 << busID;
+    } else {
+        busCommand[busID - 1]->setBusReg(busRegister);
+        busCommand[busID - 1]->setBusVal(busValue);
+        qDebug() << "Set Bus" <<busID<< "register " << busRegister << " value: " << busValue;
+    }
+}
+
 
 bool CustomProtocolClass::parseNMEAMessge(const QByteArray &rxMessage) {
     for (int i = 0; i < rxMessage.size(); ++i) {
@@ -161,13 +186,13 @@ void CustomProtocolClass::udpSocketReadyRead() {
                      << buffTokens.length();
             return;
         }
-        if (buffTokens.at(0) == "BAT1") {
+        if (buffTokens.at(0) == "$BAT1") {
             if (!podData[0]->parsePodData(_completeMessage)) {
                 qDebug() << "Error in  parsePodData while parsing:" << _completeMessage;
             } else {
                 emit pod1UpdatedData(this->podData[0]->updatedValueStringList());
             }
-        } else if (buffTokens.at(0) == "BAT2") {
+        } else if (buffTokens.at(0) == "$BAT2") {
             if (!podData[1]->parsePodData(_completeMessage)) {
                 qDebug() << "Error in  parsePodData while parsing:" << _completeMessage;
             } else {

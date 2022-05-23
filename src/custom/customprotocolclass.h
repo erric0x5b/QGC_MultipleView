@@ -6,8 +6,11 @@
 #include <QTimer>
 #include "poddata.h"
 #include "podcommand.h"
+#include "buscommand.h"
 
-#define NR_POD  2
+#define NR_POD      2
+#define BUS_DEVICE  4
+
 
 class CustomProtocolClass : public QObject
 {
@@ -42,6 +45,14 @@ public slots:
     void timerOverflow();
 
     /**
+     * @brief setBUSRegisterValue set a register-value for the given busID
+     * @param busID
+     * @param busRegister
+     * @param busValue
+     */
+    void setBUSRegisterValue(int busID, int busRegister, int busValue);
+
+    /**
      * @brief enable24V Function used to enable/disable the 24V power supply on the ROV POD
      * @param podID can be either 1 or 2 right now
      * @param enabled TRUE to enable. FALSE to disable.
@@ -69,12 +80,15 @@ private:
     PODData* podData[NR_POD];
     // Array of pointer to the different POD of the ROV. Store the command sent to each POD.
     PODCommand* podCommand[NR_POD];
+    // Array of pointer to the different device attached to the BUS of the ROV.
+    BUSCommand* busCommand[BUS_DEVICE];
     int sendCountId;
 
     QByteArray _completeMessage;
     bool parseNMEAMessge(const QByteArray& rxMessage);
     int _parseNMEAStatus;
     int8_t _checkSumNMEA;
+    int8_t _busSentID; // ID of the last bus ID sent
 
 };
 

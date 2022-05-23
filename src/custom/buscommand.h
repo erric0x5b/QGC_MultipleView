@@ -3,12 +3,18 @@
 
 #include <QObject>
 
-class BusCommand : public QObject
+class BUSCommand : public QObject
 {
     Q_OBJECT
 public:
-    explicit BusCommand(int busID, QObject *parent = nullptr);
+    explicit BUSCommand(int busID, QObject *parent = nullptr);
     QString getNMEACommand();
+    int busReg() const;
+    void setBusReg(int newBusReg);
+
+    int busVal() const;
+    void setBusVal(int newBusVal);
+
 signals:
 private:
     int _busID;
