@@ -146,7 +146,7 @@ Item{
         anchors.verticalCenter:   labelTemperature1.verticalCenter
         anchors.leftMargin: 20
     }
-
+/*
     QGCSwitch{
         id:                 buttonEnable12V1
         anchors.left:       parent.left
@@ -214,6 +214,28 @@ Item{
             anchors.verticalCenter: parent.verticalCenter
             anchors.leftMargin:     5
         }
+    }
+*/
+    QGCLabel{
+        id:                 labelStatus
+        text:               qsTr("Status:")
+        font.family:        ScreenTools.boldFontFamily
+        color:              "white"
+        font.pointSize:     ScreenTools.largeFontPointSize
+        anchors.left:       parent.left
+        anchors.top:        labelTemperature1.bottom
+        anchors.leftMargin: 10
+        anchors.topMargin:  10
+    }
+    QGCLabel{
+        id:                 labelStatusv
+        text:               qsTr("GOOD")
+        font.family:        ScreenTools.boldFontFamily
+        color:              "Light Green"
+        font.pointSize:     ScreenTools.largeFontPointSize
+        anchors.left:       parent.horizontalCenter
+        anchors.verticalCenter:   labelStatus.verticalCenter
+        anchors.leftMargin: 20
     }
 
     function updateFields(strList) {

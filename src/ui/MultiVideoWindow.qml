@@ -14,6 +14,10 @@ import QGroundControl.Controllers       1.0
 import QGroundControl.FactSystem        1.0
 import QGroundControl.FactControls      1.0
 
+import QtQuick.Window       2.15
+import QtQuick              2.15
+import QtQuick.Controls     2.15
+
 import org.freedesktop.gstreamer.GLVideoItem 1.0
 
 import "." as QGroundMain;
@@ -158,7 +162,7 @@ ApplicationWindow {
                 border.width: 1
                 radius:                 10
                 width:                  dataSpace.width/4
-                height:                 dataSpace.height/2-10
+                height:                 dataSpace.height/3-10
                 anchors.left:           dataSpace.left
                 anchors.top:            dataSpace.top
                 anchors.topMargin:      5
@@ -169,7 +173,7 @@ ApplicationWindow {
                     id: pod1Data;
                     anchors.fill: parent
                     podTitle : qsTr("POD 1")
-
+/*
                     onEnable24VChanged: {
                         QGroundControl.customProtocol.enable24V(1, checkedStatus);
                     }
@@ -178,7 +182,7 @@ ApplicationWindow {
                     }
                     onEnableVMotChanged:{
                          QGroundControl.customProtocol.enableVMot(1, checkedStatus);
-                    }
+                    }*/
                 }
             }
 
@@ -190,7 +194,7 @@ ApplicationWindow {
                 border.width:           1
                 radius:                 10
                 width:                  dataSpace.width/4
-                height:                 dataSpace.height/2-10
+                height:                 dataSpace.height/3-10
                 anchors.left:           pod1Section.right
                 anchors.top:            dataSpace.top
                 anchors.leftMargin:     5
@@ -200,7 +204,7 @@ ApplicationWindow {
                     id: pod2Data;
                     anchors.fill: parent
                     podTitle : qsTr("POD 2")
-
+/*
                     onEnable24VChanged: {
                         QGroundControl.customProtocol.enable24V(2, checkedStatus);
                     }
@@ -209,7 +213,7 @@ ApplicationWindow {
                     }
                     onEnableVMotChanged:{
                          QGroundControl.customProtocol.enableVMot(2, checkedStatus);
-                    }
+                    }*/
                 }
             }
 
@@ -221,7 +225,7 @@ ApplicationWindow {
                 border.width:           1
                 radius:                 10
                 width:                  dataSpace.width/3
-                height:                 dataSpace.height/2-10
+                height:                 dataSpace.height/3-10
                 anchors.left:           pod2Section.right
                 anchors.top:            dataSpace.top
                 anchors.leftMargin:     5
@@ -376,7 +380,7 @@ ApplicationWindow {
                 border.width:           1
                 radius:                 10
                 width:                  multiVideoWindow.width/16
-                height:                 multiVideoWindow.height/2-10
+                height:                 multiVideoWindow.height/3-10
                 anchors.left:           controlls.right
                 anchors.top:            dataSpace.top
                 anchors.leftMargin:     5
@@ -402,6 +406,7 @@ ApplicationWindow {
                     anchors.horizontalCenter:       sourceSelect.horizontalCenter
                     anchors.top:        labelVideoSource.bottom
                     anchors.topMargin:  10
+                    width:              parent.width - 10
 
                     onClicked: {
                         QGroundControl.customProtocol.startTxTimer()
@@ -416,6 +421,7 @@ ApplicationWindow {
                     anchors.horizontalCenter:       sourceSelect.horizontalCenter
                     anchors.top:        buttonVideo1.bottom
                     anchors.topMargin:  10
+                    width:              parent.width - 10
 
                     onClicked: {
                         QGroundControl.customProtocol.startTxTimer()
@@ -430,6 +436,7 @@ ApplicationWindow {
                     anchors.horizontalCenter:       sourceSelect.horizontalCenter
                     anchors.top:        buttonVideo2.bottom
                     anchors.topMargin:  10
+                    width:              parent.width - 10
 
                     onClicked: {
                         QGroundControl.customProtocol.startTxTimer()
@@ -447,10 +454,284 @@ ApplicationWindow {
                 width:                  multiVideoWindow.width/2-10
                 height:                 multiVideoWindow.height/2-10
                 anchors.left:           dataSpace.left
-                anchors.bottom:         dataSpace.bottom
+                anchors.top:            pod1Section.bottom
                 anchors.leftMargin:     5
-                anchors.bottomMargin:   5
+                anchors.topMargin:      5
+
+                SwipeView {
+                    id: stackLayout
+                    width: 100
+                    anchors.top: tabBar.bottom
+                    anchors.right: parent.right
+                    anchors.left: parent.left
+                    anchors.bottom: parent.bottom
+                    currentIndex: tabBar.currentIndex
+
+                    onCurrentIndexChanged: tabBar.currentIndex = stackLayout.currentIndex
+
+                    Item {
+                        Label {
+                            //text: qsTr("Main")
+                            anchors.centerIn: parent
+                            font: Constants.largeFont
+                        }
+                        Rectangle {
+                            width: 630
+                            height: 320
+                            color: "transparent"
+                            border.color: "#00000000"
+
+                            QGCSlider {
+                                id: sliderLight1
+                                x: 84
+                                y: 23
+                                width: 200
+                            }
+
+                            QGCSlider {
+                                id: sliderLight2
+                                x: 84
+                                y: 77
+                                width: 200
+                            }
+
+                            QGCSlider {
+                                id: sliderLight3
+                                x: 84
+                                y: 131
+                                width: 200
+                            }
+
+                            QGCButton {
+                                id: buttonLight1
+                                x: 12
+                                y: 23
+                                text: qsTr("Light 1")
+                            }
+
+                            QGCButton {
+                                id: buttonLight2
+                                x: 12
+                                y: 77
+                                text: qsTr("Light 2")
+                            }
+
+                            QGCButton {
+                                id: buttonLight3
+                                x: 12
+                                y: 131
+                                text: qsTr("Light 3")
+                            }
+
+                            QGCSwitch {
+                                id: switchGroup1
+                                x: 290
+                                y: 23
+                            }
+
+                            QGCSwitch {
+                                id: switchGroup2
+                                x: 290
+                                y: 77
+                            }
+
+                            QGCSwitch {
+                                id: switchGroup3
+                                x: 290
+                                y: 131
+                            }
+
+                            QGCButton {
+                                id: buttonAutoHeading
+                                x: 374
+                                y: 23
+                                text: qsTr("HEADING")
+                            }
+
+                            QGCButton {
+                                id: buttonAutoDepth
+                                x: 374
+                                y: 77
+                                width: 76
+                                text: qsTr("DEPTH")
+                            }
+
+                            QGCButton {
+                                id: buttonAutoAlti
+                                x: 374
+                                y: 131
+                                width: 76
+                                text: qsTr("ALTI")
+                            }
+
+                            DelayButton {
+                                id: delayButtonThruster
+                                x: 374
+                                y: 185
+                                text: qsTr("TH. ENANLE")
+                                display: AbstractButton.TextBesideIcon
+                                checked: false
+                                delay: 2000
+                            }
+
+                            SpinBox {
+                                id: spinBoxTilt
+                                x: 88
+                                y: 239
+                                height: 30
+                                anchors.verticalCenter: buttonTilt.verticalCenter
+                                to: 90
+                                from: -90
+                                editable: true
+                            }
+
+                            QGCButton {
+                                id: buttonTilt
+                                x: 12
+                                y: 239
+                                text: qsTr("TILT RST")
+                            }
+
+                            QGCButton {
+                                id: buttonLaser
+                                x: 12
+                                y: 185
+                                width: 66
+                                text: qsTr("LASER")
+                            }
+
+                            ToolSeparator {
+                                id: toolSeparator
+                                x: 343
+                                y: 23
+                                width: 15
+                                height: 264
+                            }
+
+                            SpinBox {
+                                id: spinBoxHdg
+                                x: 456
+                                y: 23
+                                width: 166
+                                height: 30
+                                anchors.verticalCenter: buttonAutoHeading.verticalCenter
+                                to: 359
+                            }
+
+                            SpinBox {
+                                id: spinBoxAlti
+                                x: 456
+                                y: 131
+                                width: 166
+                                height: 30
+                                anchors.verticalCenter: buttonAutoAlti.verticalCenter
+                                value: 50
+                                to: 50
+                            }
+
+                            SpinBox {
+                                id: spinBoxDpt
+                                x: 456
+                                y: 77
+                                width: 166
+                                height: 30
+                                anchors.verticalCenter: buttonAutoDepth.verticalCenter
+                                value: 0
+                                to: 0
+                                from: -500
+                            }
+
+                        }
+                    }
+
+                    Item {
+                        Label {
+                            //text: qsTr("I/O")
+                            anchors.centerIn: parent
+                            font: Constants.largeFont
+                        }
+
+                    }
+
+                    Item {
+                        Label {
+                            //text: qsTr("DIAG")
+                            anchors.centerIn: parent
+                            font: Constants.largeFont
+                        }
+                    }
+
+                    Item {
+                        Label {
+                            //text: qsTr("LOG")
+                            anchors.centerIn: parent
+                            font: Constants.largeFont
+                        }
+                    }
+
+
+                }
+
+                QGCTabBar {
+                    id: tabBar
+                    //height: 48
+                    currentIndex: 0
+                    anchors.top: parent.top
+                    anchors.leftMargin: 0
+                    anchors.right: stackLayout.right
+                    anchors.left: stackLayout.left
+
+
+                    QGCTabButton {
+                        text: qsTr("Main")
+                    }
+
+                    QGCTabButton {
+                        text: qsTr("I/O")
+                    }
+
+                    QGCTabButton {
+                        text: qsTr("DIAG")
+                    }
+
+                    QGCTabButton {
+                        text: qsTr("LOG")
+                    }
+                }
             }
+
+            //log
+            Rectangle{
+                id:                     logView
+                color:                  Qt.rgba(0,0,0,0.40)
+                visible:                true
+                border.width:           1
+                radius:                 10
+                //width:                  multiVideoWindow.width/2-10
+                //height:                 multiVideoWindow.height/2-10
+                anchors.left:           dataSpace.left
+                anchors.top:            swipeView.bottom
+                anchors.bottom:         dataSpace.bottom
+                anchors.right:          dataSpace.right
+                anchors.leftMargin:     5
+                anchors.topMargin:      5
+                anchors.bottomMargin:   5
+                anchors.rightMargin:    5
+
+
+                QGCTextField{
+                    id:             textFieldMain
+                    anchors.top:    logView.top
+                    anchors.bottom: logView.bottom
+                    anchors.left:   logView.left
+                    anchors.right: logView.right
+                    anchors.leftMargin:     5
+                    anchors.topMargin:      5
+                    anchors.bottomMargin:   5
+                    anchors.rightMargin:    5
+                }
+            }
+
 
 
 

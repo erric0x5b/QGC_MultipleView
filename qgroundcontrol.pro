@@ -436,6 +436,7 @@ HEADERS += \
     src/api/QGCSettings.h \
     src/api/QmlComponentInfo.h \
     src/GPS/Drivers/src/base_station.h \
+    src/custom/buscommand.h \
     src/custom/customprotocolclass.h \
     src/custom/podcommand.h \
     src/custom/poddata.h
@@ -451,6 +452,7 @@ SOURCES += \
     src/api/QGCOptions.cc \
     src/api/QGCSettings.cc \
     src/api/QmlComponentInfo.cc \
+    src/custom/buscommand.cpp \
     src/custom/customprotocolclass.cpp \
     src/custom/podcommand.cpp \
     src/custom/poddata.cpp

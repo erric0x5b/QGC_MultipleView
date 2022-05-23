@@ -6,7 +6,7 @@
 #include <QTimer>
 #include "poddata.h"
 #include "podcommand.h"
-
+#include "buscommand.h"
 
 class CustomProtocolClass : public QObject
 {
@@ -68,6 +68,8 @@ private:
     PODData* podData2;
     PODCommand* podCommand1;
     PODCommand* podCommand2;
+    BusCommand* busCommand1;
+    BusCommand* busCommand2;
     int sendCountId;
 
     QByteArray _completeMessage;

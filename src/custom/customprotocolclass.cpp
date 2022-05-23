@@ -18,6 +18,8 @@ CustomProtocolClass::CustomProtocolClass(QObject *parent)
     podData2 = new PODData(this);
     podCommand1 = new PODCommand(1, this);
     podCommand2 = new PODCommand(2, this);
+    busCommand1 = new BusCommand(1, this);
+    busCommand2 = new BusCommand(2, this);
     _parseNMEAStatus = 0;
 }
 
@@ -35,7 +37,7 @@ void CustomProtocolClass::timerOverflow() {
         break;
     case 2:
     default:
-        Data.append("$SFC,BUS,1,1,1*\r\n");
+        Data = busCommand1->getNMEACommand().toUtf8();
         sendCountId =0;
     }
 
