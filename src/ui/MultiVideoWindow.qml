@@ -17,6 +17,7 @@ import QGroundControl.FactControls      1.0
 import QtQuick.Window       2.15
 import QtQuick              2.15
 import QtQuick.Controls     2.15
+import QtQuick.Controls.Styles 1.4
 
 import org.freedesktop.gstreamer.GLVideoItem 1.0
 
@@ -37,100 +38,6 @@ ApplicationWindow {
         QGroundControl.videoManager.stopMultiCamRecording();
     }
 
-    Item {
-        anchors.fill: parent
-        Rectangle {
-            id:             noVideo0
-            width:          parent.width/2
-            height:         parent.height/2
-            x:              parent.width/2
-            y:              0
-            color:          Qt.rgba(0,0,0,0.75)
-            border.width:   1
-            visible:        !(QGroundControl.videoManager.decoding0)
-            QGCLabel {
-                text:               qsTr("WAITING FOR VIDEO 1")
-                font.family:        ScreenTools.demiboldFontFamily
-                color:              "white"
-                font.pointSize:     ScreenTools.largeFontPointSize
-                anchors.centerIn:   parent
-            }
-        }
-        GstGLVideoItem {
-            objectName: "videoContent0"
-            width: parent.width/2
-            height: parent.height/2
-            x: parent.width/2
-            y: 0
-            property var receiver
-            visible: QGroundControl.videoManager.decoding0
-        }
-    }
-
-    Item {
-        anchors.fill: parent
-        Rectangle {
-            id:             noVideo1
-            width:          parent.width/2
-            height:         parent.height/2
-            x:              parent.width/2
-            y:              parent.height/2
-            color:          Qt.rgba(0,0,0,0.75)
-            border.width:   1
-            visible:        !(QGroundControl.videoManager.decoding1)
-            QGCLabel {
-                text:               qsTr("WAITING FOR VIDEO 2")
-                font.family:        ScreenTools.demiboldFontFamily
-                color:              "white"
-                font.pointSize:     ScreenTools.largeFontPointSize
-                anchors.centerIn:   parent
-            }
-        }
-        GstGLVideoItem {
-            objectName: "videoContent1"
-            width: parent.width/2
-            height: parent.height/2
-            x: parent.width/2
-            y: parent.height/2
-            property var receiver
-            visible: QGroundControl.videoManager.decoding1
-        }
-    }
-/*
-    Item {
-        anchors.fill: parent
-        Rectangle {
-            id:             noVideo2
-            width:          parent.width/2
-            height:         parent.height/2
-            x:              parent.width/2
-            y:              parent.height/2
-            color:          Qt.rgba(0,0,0,0.75)
-            visible:        !(QGroundControl.videoManager.decoding2)
-            QGCLabel {
-                text:               qsTr("WAITING FOR VIDEO 3")
-                font.family:        ScreenTools.demiboldFontFamily
-                color:              "white"
-                font.pointSize:     ScreenTools.largeFontPointSize
-                anchors.centerIn:   parent
-            }
-        }
-        GstGLVideoItem {
-            objectName: "videoContent2"
-            width: parent.width/2
-            height: parent.height/2
-            x: parent.width/2
-            y: parent.height/2
-            property var receiver
-            visible: QGroundControl.videoManager.decoding2
-        }
-    }
-*/
-
-
-
-
-
     //ROV DATA
     Item{
         Rectangle{
@@ -138,12 +45,12 @@ ApplicationWindow {
             color:                  "transparent"
             gradient: Gradient {
                 GradientStop {
-                    position: 0.29;
-                    color: "#141033";
+                    position: 0.00;
+                    color: "#181627";
                 }
                 GradientStop {
                     position: 1.00;
-                    color: "#041082";
+                    color: "#070920";
                 }
             }
             visible: true
@@ -460,13 +367,13 @@ ApplicationWindow {
 
                 SwipeView {
                     id: stackLayout
-                    width: 100
+                    //width: 100
                     anchors.top: tabBar.bottom
                     anchors.right: parent.right
                     anchors.left: parent.left
                     anchors.bottom: parent.bottom
-                    currentIndex: tabBar.currentIndex
 
+                    currentIndex: tabBar.currentIndex
                     onCurrentIndexChanged: tabBar.currentIndex = stackLayout.currentIndex
 
                     Item {
@@ -484,7 +391,7 @@ ApplicationWindow {
                             QGCLabel{
                                 id:     labelOnOf
                                 text:   qsTr("ON/OFF")
-                                font:   ScreenTools.deminormalFontFamily
+                                font:   ScreenTools.demiboldFontFamily
                                 anchors.horizontalCenter:   switchLight1.horizontalCenter
                                 anchors.top:    parent.top
                                 anchors.topMargin:  10
@@ -501,7 +408,7 @@ ApplicationWindow {
                             QGCLabel{
                                 id:     labelGroup
                                 text:   qsTr("GROUP")
-                                font:   ScreenTools.deminormalFontFamily
+                                font:   ScreenTools.demiboldFontFamily
                                 anchors.horizontalCenter:   switchGroup1.horizontalCenter
                                 anchors.verticalCenter:     labelOnOf.verticalCenter
                             }
@@ -511,19 +418,22 @@ ApplicationWindow {
                                 anchors.top:    labelOnOf.bottom
                                 anchors.left:   parent.left
                                 anchors.leftMargin: 10
-                                anchors.topMargin: 20
+                                anchors.topMargin: 30
 
                                 onCheckedChanged: {
                                     if ( switchLight1.checked)
                                     {
                                         // Turn on
                                         QGroundControl.customProtocol.setBUSRegisterValue(1,1,1);
+                                        QGroundControl.customProtocol.setBUSRegisterValue(1,4,8);
                                     } else {
-                                        // Turn on
+                                        // Turn off
                                         QGroundControl.customProtocol.setBUSRegisterValue(1,1,0);
                                     }
                                 }
                             }
+
+                            property int sliderValue: sliderValue
 
                             QGCSlider {
                                 id: sliderLight1
@@ -549,7 +459,7 @@ ApplicationWindow {
                                 id: switchLight2
                                 anchors.horizontalCenter:   switchLight1.horizontalCenter
                                 anchors.top:                switchLight1.bottom
-                                anchors.topMargin:  20
+                                anchors.topMargin:  30
 
                                 onCheckedChanged: {
                                     if ( switchLight2.checked)
@@ -557,7 +467,7 @@ ApplicationWindow {
                                         // Turn on
                                         QGroundControl.customProtocol.setBUSRegisterValue(2,1,1);
                                     } else {
-                                        // Turn on
+                                        // Turn off
                                         QGroundControl.customProtocol.setBUSRegisterValue(2,1,0);
                                     }
                                 }
@@ -586,7 +496,7 @@ ApplicationWindow {
                                 id: switchLight3
                                 anchors.horizontalCenter:   switchLight1.horizontalCenter
                                 anchors.top:                switchLight2.bottom
-                                anchors.topMargin:  20
+                                anchors.topMargin:  30
 
                                 onCheckedChanged: {
                                     if ( switchLight3.checked)
@@ -594,7 +504,7 @@ ApplicationWindow {
                                         // Turn on
                                         QGroundControl.customProtocol.setBUSRegisterValue(3,1,1);
                                     } else {
-                                        // Turn on
+                                        // Turn off
                                         QGroundControl.customProtocol.setBUSRegisterValue(3,1,0);
                                     }
                                 }
@@ -650,6 +560,7 @@ ApplicationWindow {
                                 display: AbstractButton.TextBesideIcon
                                 checked: false
                                 delay: 2000
+
                             }
 
                             SpinBox {
@@ -722,12 +633,151 @@ ApplicationWindow {
                     }
 
                     Item {
-                        Label {
-                            //text: qsTr("I/O")
-                            anchors.centerIn: parent
-                            font: Constants.largeFont
+                        ToolSeparator {
+                            id: toolPODSeparator
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.left:           parent.left
+                            anchors.leftMargin:     200
+                            width: 15
+                            height: 264
+                        }
+                        QGCLabel{
+                            id:                         labelPOD
+                            text:                       qsTr("POD 1")
+                            font:                       ScreenTools.demiboldFontFamily
+                            anchors.top:                parent.top
+                            anchors.horizontalCenter:   switchVmot.horizontalCenter
+                            anchors.topMargin:          10
+                        }
+                        QGCSwitch {
+                            id: switchVmot
+                            anchors.top:           labelPOD.bottom
+                            anchors.left:          parent.left
+                            anchors.leftMargin:    30
+                            anchors.topMargin:     10
+                            QGCLabel{
+                                text:   qsTr("Vmot")
+                                font:   ScreenTools.demiboldFontFamily
+                                anchors.left:               switchVmot.right
+                                anchors.verticalCenter:     switchVmot.verticalCenter
+                                anchors.leftMargin:         10
+                            }
+                        }
+                        QGCSwitch {
+                            id: switchV12
+                            anchors.horizontalCenter:   switchVmot.horizontalCenter
+                            anchors.top:                switchVmot.bottom
+                            anchors.topMargin:          20
+                            QGCLabel{
+                                text:   qsTr("12 V")
+                                font:   ScreenTools.demiboldFontFamily
+                                anchors.left:               switchV12.right
+                                anchors.verticalCenter:     switchV12.verticalCenter
+                                anchors.leftMargin:         10
+                            }
+                        }
+                        QGCSwitch {
+                            id: switchV24
+                            anchors.horizontalCenter:   switchVmot.horizontalCenter
+                            anchors.top:                switchV12.bottom
+                            anchors.topMargin:          20
+                            QGCLabel{
+                                text:   qsTr("24 V")
+                                font:   ScreenTools.demiboldFontFamily
+                                anchors.left:               switchV24.right
+                                anchors.verticalCenter:     switchV12.verticalCenter
+                                anchors.leftMargin:         10
+                            }
                         }
 
+                        QGCLabel{
+                            id:     labelDout
+                            text:   qsTr("D. OUT")
+                            font:   ScreenTools.demiboldFontFamily
+                            anchors.top:                switchV24.bottom
+                            anchors.horizontalCenter:   switchVmot.horizontalCenter
+                            anchors.topMargin:          15
+                        }
+                        QGCSwitch {
+                            id: switchDo1
+                            anchors.horizontalCenter:   switchVmot.horizontalCenter
+                            anchors.top:                labelDout.bottom
+                            anchors.topMargin:          10
+                            QGCLabel{
+                                text:   qsTr("1")
+                                font:   ScreenTools.demiboldFontFamily
+                                anchors.left:               switchDo1.right
+                                anchors.verticalCenter:     labelDout.verticalCenter
+                                anchors.leftMargin:         20
+                            }
+                        }
+                        QGCSwitch {
+                            id: switchDo2
+                            anchors.horizontalCenter:   switchVmot.horizontalCenter
+                            anchors.top:                switchDo1.bottom
+                            anchors.topMargin:          10
+                            QGCLabel{
+                                text:   qsTr("2")
+                                font:   ScreenTools.demiboldFontFamily
+                                anchors.left:               switchDo2.right
+                                anchors.verticalCenter:     switchDo1.verticalCenter
+                                anchors.leftMargin:         20
+                            }
+                        }
+                        QGCSwitch {
+                            id: switchDo3
+                            anchors.horizontalCenter:   switchVmot.horizontalCenter
+                            anchors.top:                switchDo2.bottom
+                            anchors.topMargin:          10
+                            QGCLabel{
+                                text:   qsTr("3")
+                                font:   ScreenTools.demiboldFontFamily
+                                anchors.left:               switchDo3.right
+                                anchors.verticalCenter:     switchDo2.verticalCenter
+                                anchors.leftMargin:         20
+                            }
+                        }
+                        QGCSwitch {
+                            id: switchDo4
+                            anchors.horizontalCenter:   switchVmot.horizontalCenter
+                            anchors.top:                switchDo3.bottom
+                            anchors.topMargin:          10
+                            QGCLabel{
+                                text:   qsTr("4")
+                                font:   ScreenTools.demiboldFontFamily
+                                anchors.left:               switchDo4.right
+                                anchors.verticalCenter:     switchDo3.verticalCenter
+                                anchors.leftMargin:         20
+                            }
+                        }
+                        QGCLabel{
+                            id:     labelDin
+                            text:   qsTr("D. IN")
+                            font:   ScreenTools.demiboldFontFamily
+                            anchors.verticalCenter:     labelDout.verticalCenter
+                            anchors.left:               labelDout.right
+                            anchors.leftMargin:         50
+                        }
+                        QGCRadioButton{
+                            id: comboboxDi1
+                            anchors.verticalCenter:      switchDo1.verticalCenter
+                            anchors.horizontalCenter:    labelDin.horizontalCenter
+                        }
+                        QGCRadioButton{
+                            id: comboboxDi2
+                            anchors.verticalCenter:      switchDo2.verticalCenter
+                            anchors.horizontalCenter:    labelDin.horizontalCenter
+                        }
+                        QGCRadioButton{
+                            id: comboboxDi3
+                            anchors.verticalCenter:      switchDo3.verticalCenter
+                            anchors.horizontalCenter:    labelDin.horizontalCenter
+                        }
+                        QGCRadioButton{
+                            id: comboboxDi4
+                            anchors.verticalCenter:      switchDo4.verticalCenter
+                            anchors.horizontalCenter:    labelDin.horizontalCenter
+                        }
                     }
 
                     Item {
@@ -784,12 +834,10 @@ ApplicationWindow {
             //log
             Rectangle{
                 id:                     logView
-                color:                  Qt.rgba(0,0,0,0.40)
+                color:                  "transparent"
                 visible:                true
                 border.width:           1
                 radius:                 10
-                //width:                  multiVideoWindow.width/2-10
-                //height:                 multiVideoWindow.height/2-10
                 anchors.left:           dataSpace.left
                 anchors.top:            swipeView.bottom
                 anchors.bottom:         dataSpace.bottom
@@ -800,23 +848,21 @@ ApplicationWindow {
                 anchors.rightMargin:    5
 
 
-                QGCTextField{
-                    id:             textFieldMain
-                    anchors.top:    logView.top
-                    anchors.bottom: logView.bottom
-                    anchors.left:   logView.left
-                    anchors.right: logView.right
+                TextField{
+                    id:                 textFieldMain
+
+                    anchors.top:        logView.top
+                    anchors.bottom:     logView.bottom
+                    anchors.left:       logView.left
+                    anchors.right:      logView.right
                     anchors.leftMargin:     5
                     anchors.topMargin:      5
                     anchors.bottomMargin:   5
                     anchors.rightMargin:    5
+
+                    placeholderText: qsTr("Log field")
                 }
             }
-
-
-
-
-
 
             Connections {
                 target: QGroundControl.customProtocol
@@ -830,6 +876,66 @@ ApplicationWindow {
                 }
 
             }
+        }
+    }
+
+    Item {
+        anchors.fill: parent
+        Rectangle {
+            id:             noVideo0
+            width:          parent.width/2
+            height:         parent.height/2
+            x:              parent.width/2
+            y:              0
+            color:          "#515151" //Qt.rgba(0,0,0,0.75)
+            border.width:   1
+            visible:        !(QGroundControl.videoManager.decoding0)
+            QGCLabel {
+                text:               qsTr("WAITING FOR VIDEO 1")
+                font.family:        ScreenTools.demiboldFontFamily
+                color:              "white"
+                font.pointSize:     ScreenTools.largeFontPointSize
+                anchors.centerIn:   parent
+            }
+        }
+        GstGLVideoItem {
+            objectName: "videoContent0"
+            width: parent.width/2
+            height: parent.height/2
+            x: parent.width/2
+            y: 0
+            property var receiver
+            visible: QGroundControl.videoManager.decoding0
+        }
+    }
+
+    Item {
+        anchors.fill: parent
+        Rectangle {
+            id:             noVideo1
+            width:          parent.width/2
+            height:         parent.height/2
+            x:              parent.width/2
+            y:              parent.height/2
+            color:          "#515151" //Qt.rgba(0,0,0,0.75)
+            border.width:   1
+            visible:        !(QGroundControl.videoManager.decoding1)
+            QGCLabel {
+                text:               qsTr("WAITING FOR VIDEO 2")
+                font.family:        ScreenTools.demiboldFontFamily
+                color:              "white"
+                font.pointSize:     ScreenTools.largeFontPointSize
+                anchors.centerIn:   parent
+            }
+        }
+        GstGLVideoItem {
+            objectName: "videoContent1"
+            width: parent.width/2
+            height: parent.height/2
+            x: parent.width/2
+            y: parent.height/2
+            property var receiver
+            visible: QGroundControl.videoManager.decoding1
         }
     }
 }
